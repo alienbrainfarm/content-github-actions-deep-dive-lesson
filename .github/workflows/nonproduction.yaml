@@ -11,25 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUCKET_NAME: cfst-3457-75b6fc44005cbb2e03bc39bd1-nonprodbucket-17y02xj0z0vbp
-    steps:
-      - name: configure aws cli
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: checkout node.js
-        uses: actions/checkout@v3
-      - name: set up node.js 
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: build it    
-        run: |
-          pwd
-          ls -la
-          npm install
-          npm ci
-          npm run build
-      - name: deploy files to bucket
-        run: aws s3 cp public s3://${{ env.BUCKET_NAME }} --recursive --acl public-read
+    steps:  
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+        cache: 'npm'
+        cache-dependency-path: |
+            server/app/package-lock.json
+            frontend/app/package-lock.json
+    - run: npm ci
+    - run: npm test
+      
