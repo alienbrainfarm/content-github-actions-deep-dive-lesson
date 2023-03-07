@@ -12,8 +12,6 @@ jobs:
     env:
       BUCKET_NAME: cfst-3457-75b6fc44005cbb2e03bc39bd1-nonprodbucket-17y02xj0z0vbp
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
       - name: configure aws cli
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -21,10 +19,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: set up node.js
+        uses: actions/checkout@v2
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: build site
         run: |
           npm ci
           npm run build
